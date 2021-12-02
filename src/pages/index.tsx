@@ -4,7 +4,9 @@
 import {GetStaticProps} from 'next';
 import { api } from '../services/api';
 import { format, parseISO } from 'date-fns';
-import { ptBR } from 'date-fns/locale/pt-BR';
+import ptBR from 'date-fns/locale/pt-BR'
+import { convertDurationToTimeString } from './../utils/convertDurationToTimeString';
+
 // import { useEffect } from "react"
 
 type Episode = {
@@ -60,12 +62,16 @@ export const getStaticProps: GetStaticProps = async () => {
       thumbnail: episode.thumbnail,
       members: episode.members,
       publishedAt: format(parseISO(episode.published_at), 'd MMM yy', { locale: ptBR }),
-    }
+      duration: Number(episode.file.duration),
+      durationAsString: convertDurationToTimeString(Number(episode.file.duration)),
+      description: episode.description,
+      url: episode.file.url,
+    };
   })
 
   return {
     props: {
-      episodes: data
+      episodes,
     },
     revalidate: 60 * 60  * 8, // USANDO SSG
   }
