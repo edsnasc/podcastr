@@ -2,15 +2,63 @@ import {useRouter} from 'next/router'
 import { api } from '../../services/api';
 import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR'
-import {GetStaticProps} from 'next';
+import {GetStaticPaths, GetStaticProps} from 'next';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString'
+import styles from './episode.module.scss'
+import Image  from 'next/image';
 
-export default function Episode() {
-    const router = useRouter(); 
+type Episode = {
+    id: string;
+    title: string;
+    members: string;
+    thumbnail: string;
+    duration: string;
+    durationAsString: string;
+    url: string;
+    publishedAt: string;
+    description: string;
+}
 
+type EpisodeProps = {
+    episode: Episode;
+}
+
+
+export default function Episode({episode}: EpisodeProps) {
     return(
-        <h1>{router.query.slug}</h1>
+        <div className={styles.episode}>    
+            <div className={styles.thumbnailContainer}>
+                <button type="button">
+                    <img src="/arrow-left.svg" alt="voltar" />
+                </button>
+                <Image 
+                    width={700}
+                    height={160}
+                    src={episode.thumbnail}
+                    objectFit="cover"
+                />
+                <button type="button">
+                    <img src="/play.svg" alt="tocar episodio" />
+                </button>
+
+                <header>
+                    <h1>{episode.title}</h1>
+                    <span>{episode.members}</span>
+                    <span>{episode.publishedAt}</span>
+                    <span>{episode.durationAsString}</span> 
+                </header>
+
+                <div className={styles.description} dangerouslySetInnerHTML={{ __html: episode.description }}/>
+            </div>
+        </div>
     )
+}
+
+export const getStaticPaths: GetStaticPaths = async () => {
+    return {
+        paths: [],
+        fallback: 'blocking'
+    }
 }
 
 export const getStaticProps: GetStaticProps = async (ctx) => {
@@ -27,8 +75,8 @@ export const getStaticProps: GetStaticProps = async (ctx) => {
           duration: Number(data.file.duration),
           durationAsString: convertDurationToTimeString(Number(data.file.duration)),
           url: data.file.url,
-          description: data.description
-    }
+          description: data.description,
+    };
 
     return {
         props: {
