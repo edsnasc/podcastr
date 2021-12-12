@@ -1,11 +1,11 @@
-import {useRouter} from 'next/router'
 import { api } from '../../services/api';
 import { format, parseISO } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR'
-import {GetStaticPaths, GetStaticProps} from 'next';
+import { GetStaticPaths, GetStaticProps } from 'next';
+import Link  from 'next/link';
 import { convertDurationToTimeString } from '../../utils/convertDurationToTimeString'
 import styles from './episode.module.scss'
-import Image  from 'next/image';
+import Image from 'next/image';
 
 type Episode = {
     id: string;
@@ -24,32 +24,46 @@ type EpisodeProps = {
 }
 
 
-export default function Episode({episode}: EpisodeProps) {
-    return(
-        <div className={styles.episode}>    
+export default function Episode({ episode }: EpisodeProps) {
+    return (
+        <div className={styles.episode}>
+
+            <title>{episode.title} | Podcastr</title>
+
+
             <div className={styles.thumbnailContainer}>
-                <button type="button">
-                    <img src="/arrow-left.svg" alt="voltar" />
-                </button>
-                <Image 
+                <Link href="/">
+                    <button type="button">
+                        <img src="/arrow-left.svg" alt="Voltar" />
+                    </button>
+                </Link>
+
+                <Image
                     width={700}
                     height={160}
                     src={episode.thumbnail}
                     objectFit="cover"
                 />
-                <button type="button">
-                    <img src="/play.svg" alt="tocar episodio" />
+                <button>
+                    <img src="/play.svg" alt="Tocar episódio" />
                 </button>
-
-                <header>
-                    <h1>{episode.title}</h1>
-                    <span>{episode.members}</span>
-                    <span>{episode.publishedAt}</span>
-                    <span>{episode.durationAsString}</span> 
-                </header>
-
-                <div className={styles.description} dangerouslySetInnerHTML={{ __html: episode.description }}/>
             </div>
+
+            <header>
+                <h1>{episode.title}</h1>
+                <span>{episode.members}</span>
+                <span>{episode.publishedAt}</span>
+                <span>{episode.durationAsString}</span>
+            </header>
+
+            <div
+                className={styles.description}
+                dangerouslySetInnerHTML={{
+                    __html:
+                        episode.description
+                }}
+            />
+
         </div>
     )
 }
@@ -64,18 +78,18 @@ export const getStaticPaths: GetStaticPaths = async () => {
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params;
 
-    const {data} = await api.get(`/episodes/${slug}`)
+    const { data } = await api.get(`/episodes/${slug}`)
 
     const episode = {
-          id: data.id,
-          title: data.title,
-          thumbnail: data.thumbnail,
-          members: data.members,
-          publishedAt: format(parseISO(data.published_at), 'd MMM yy', { locale: ptBR }),
-          duration: Number(data.file.duration),
-          durationAsString: convertDurationToTimeString(Number(data.file.duration)),
-          url: data.file.url,
-          description: data.description,
+        id: data.id,
+        title: data.title,
+        thumbnail: data.thumbnail,
+        members: data.members,
+        publishedAt: format(parseISO(data.published_at), 'd MMM yy', { locale: ptBR }),
+        duration: Number(data.file.duration),
+        durationAsString: convertDurationToTimeString(Number(data.file.duration)),
+        url: data.file.url,
+        description: data.description,
     };
 
     return {
