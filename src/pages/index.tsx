@@ -2,6 +2,7 @@
 // SSR
 // SSG
 import {GetStaticProps} from 'next';
+import { useContext } from 'react';
 import Image from 'next/image';
 import { api } from '../services/api';
 import { format, parseISO } from 'date-fns';
@@ -11,13 +12,14 @@ import { convertDurationToTimeString } from './../utils/convertDurationToTimeStr
 // import { useEffect } from "react"
 import styles from './home.module.scss'
 import Link from 'next/link';
+import { PlayerContext } from '../context/PlayerContext';
 
 type Episode = {
   id: string;
   title: string;
   members: string;
   thumbnail: string;
-  duration: string;
+  duration: number;
   durationAsString: string;
   url: string;
   publishedAt: string;
@@ -34,6 +36,8 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
     .then(response => response.json())
     .then(data => console.log(data))
   }, []) USANDO SPA*/
+
+  const { play } = useContext(PlayerContext)
 
   return (
     <div className={styles.homepage}>
@@ -61,7 +65,7 @@ export default function Home({ latestEpisodes, allEpisodes }: HomeProps) {
                   <span>{episode.durationAsString}</span>
                 </div>
 
-                <button type="button">
+                <button type="button" onClick={() => play(episode)}>
                   <img src="/play-green.svg" alt="Tocar episódio" />
                 </button>
               </li>
