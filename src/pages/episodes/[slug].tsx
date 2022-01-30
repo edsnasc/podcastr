@@ -89,7 +89,8 @@ export const getStaticPaths: GetStaticPaths = async () => {
       paths,
       fallback: 'blocking'
     }
-  }
+}
+
 export const getStaticProps: GetStaticProps = async (ctx) => {
     const { slug } = ctx.params;
 
