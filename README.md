@@ -20,7 +20,7 @@
 
 ##### Projeto Front-End Construido durante o NLW 5ª Edição 
 
-<p>Podcastr é app web onde é possível escutar podcast executado através de um player, contendo todas as essencias funcionalidades de um player para uma boa experiencia! esse projeto foi utilizado o Next js
+<p>Podcastr é app web onde é possível escutar podcast executado através de um player, contendo todas as essenciais funcionalidades de um player para uma boa experiencia! esse projeto foi utilizado o Next js
 e Sass</P>
 
 
